@@ -1,0 +1,82 @@
+pipeline {
+	agent any
+	environment {
+		dotnet = "C:/Program Files/dotnet/dotnet.exe"
+		iputval= ""
+	}
+	parameters {
+    string(name: 'strTest1',
+      defaultValue: 'test1',
+      description: 'Test 1')
+       string(name: 'strTest2',
+      defaultValue: 'test2',
+      description: 'Test 2')
+  }
+    stages {
+        stage('Checkout') {
+            steps {
+				//git credentialsId: '2073aa86-7d97-4d54-8262-8e519461d0ba', url: 'https://github.com/basirjalali/JenkinsTest.git'
+             echo "Checkout ${params.strTest1}"
+            }
+        }
+        stage('Restore Packages') {
+            steps {
+             echo "Restore Packages ${params.strTest2}"
+            }
+        }
+        stage('Clean') {
+            steps {
+                echo "Clean" 
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Build' 
+            }
+        }
+        stage('Pack') {
+            steps {
+             echo "Pack" 
+            }
+        }
+        stage('Test') {
+            steps {
+             echo 'Test' 
+            }
+        }
+        stage('Publish') {
+            when {
+              expression {
+                currentBuild.result == null || currentBuild.result == 'SUCCESS' 
+              }
+            }
+            steps {
+             echo 'Publish' 
+            }
+        }
+        stage('Deploy') {
+            when {
+              expression {
+                currentBuild.result == null || currentBuild.result == 'SUCCESS' 
+              }
+            }
+            steps {
+             echo 'Deploy' 
+            }
+        }
+    }
+	post {  
+         always {  
+             echo 'This will always run'  
+         }  
+         unstable{
+             echo 'Unstable'             
+         }
+         success {  
+             echo 'Done'
+         }  
+         failure {
+             echo 'Failed'
+         }  
+     }  
+}
