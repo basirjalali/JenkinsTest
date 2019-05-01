@@ -71,7 +71,7 @@ pipeline {
               }
             }
             steps {
-             build job: 'JenkinsTest_1', parameters: [[$class: 'StringParameterValue', name: 'strTest1', value: env.OPTION],[$class: 'StringParameterValue', name: 'strTest2', value: env.BUILD_NUMBER]]
+             build job: 'JenkinsTest_1', parameters: [[$class: 'StringParameterValue', name: 'strTest1', value: env.OPTION],[$class: 'StringParameterValue', name: 'strTest2', value: git_commit()]]
             }
         }
         stage('Stage-two') {
@@ -81,7 +81,7 @@ pipeline {
               }
             }
             steps {
-             build job: 'JenkinsTest_2', parameters: [[$class: 'StringParameterValue', name: 'strTest1', value: env.OPTION],[$class: 'StringParameterValue', name: 'strTest2', value: env.BUILD_NUMBER]]
+             build job: 'JenkinsTest_2', parameters: [[$class: 'StringParameterValue', name: 'strTest1', value: env.OPTION],[$class: 'StringParameterValue', name: 'strTest2', value: git_commit()]]
             }
         }
     }
@@ -99,4 +99,12 @@ pipeline {
              echo 'Failed'
          }  
      }  
+}
+
+def git_commit () {
+   bat (
+        script: 'git rev-parse HEAD > commit',
+        returnStdout: true
+    ).trim()
+    return readFile('commit').trim()
 }
