@@ -71,7 +71,7 @@ pipeline {
               }
             }
             steps {
-             build job: 'JenkinsTest_1', parameters: [[$class: 'StringParameterValue', name: 'strTest1', value: env.OPTION],[$class: 'StringParameterValue', name: 'strTest2', value: git_commit()]]
+             build job: 'JenkinsTest_1', parameters: [[$class: 'StringParameterValue', name: 'strTest1', value: env.OPTION],[$class: 'StringParameterValue', name: 'strTest2', value: null]]
             }
         }
         stage('Stage-two') {

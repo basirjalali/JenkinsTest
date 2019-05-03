@@ -2,17 +2,28 @@ pipeline {
 	agent any
 	environment {
 		dotnet = "C:/Program Files/dotnet/dotnet.exe"
-		iputval= ""
+        docker_version = ''
 	}
 	parameters {
     string(name: 'strTest1',
       defaultValue: 'test1',
       description: 'Test 1')
        string(name: 'strTest2',
-      defaultValue: 'test2',
+      defaultValue: 'latest',
       description: 'Test 2')
   }
     stages {
+        stage('Input') {
+            steps {
+                script {
+                    if(params.strTest2 == null ){
+                        docker_version = input message: 'User input required', parameters: [string(name: 'options', defaultValue: 'latest', description: 'Docker image tag')]                        
+                    }else{
+                        docker_version=params.strTest2
+                    }                     
+                }
+            }
+        }
         stage('Checkout') {
             steps {
 				//git credentialsId: '2073aa86-7d97-4d54-8262-8e519461d0ba', url: 'https://github.com/basirjalali/JenkinsTest.git'
@@ -20,8 +31,13 @@ pipeline {
             }
         }
         stage('Restore Packages') {
+            //when {
+            //  expression {
+            //    return params.strTest1 == 'one'
+            //  }
+            //}
             steps {
-             echo "Restore Packages ${params.strTest2}"
+                echo "Environment agent info: ${docker_version}"
             }
         }
         stage('Clean') {
